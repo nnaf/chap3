@@ -2,36 +2,36 @@ Chapter 3
 ============
 
 
-''' scala  
-sealed trait List[+A] // `List` data type
-case object Nil extends List[Nothing] // data constructor for `List`
-case class Cons[+A](head: A, tail: List[A]) extends List[A]
+	''' scala  
+	sealed trait List[+A] // `List` data type
+	case object Nil extends List[Nothing] // data constructor for `List`
+	case class Cons[+A](head: A, tail: List[A]) extends List[A]
 
-object List { // `List` companion object
-  def sum(ints: List[Int]): Int = ints match { // Pattern matching example
-    case Nil => 0
-    case Cons(x,xs) => x + sum(xs)
-  } 
-  
-  def product(ds: List[Double]): Double = ds match {
-    case Nil => 1.0
-    case Cons(0.0, _) => 0.0
-    case Cons(x,xs) => x * product(xs)
-  }
-}
-'''
+	object List { // `List` companion object
+	  def sum(ints: List[Int]): Int = ints match { // Pattern matching example
+	    case Nil => 0
+	    case Cons(x,xs) => x + sum(xs)
+	  } 
+	  
+	  def product(ds: List[Double]): Double = ds match {
+	    case Nil => 1.0
+	    case Cons(0.0, _) => 0.0
+	    case Cons(x,xs) => x * product(xs)
+	  }
+	}
+	'''
   
 Variadic function
 ------------------
-'''  
-def apply[A](as: A*): List[A] = // Variadic function syntax
-  if (as.isEmpty) Nil
-  else Cons(as.head, apply(as.tail: _*))
-'''
+	'''java  
+	def apply[A](as: A*): List[A] = // Variadic function syntax
+	  if (as.isEmpty) Nil
+	  else Cons(as.head, apply(as.tail: _*))
+	'''
 
 Exercise 1
 -------------
-	'''  
+	'''scala  
 	val example = Cons(1, Cons(2, Cons(3, Nil))) // Creating lists
 	val example2 = List(1,2,3)
 	val total = sum(example)
