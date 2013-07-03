@@ -32,6 +32,12 @@ def apply[A](as: A*): List[A] = // Variadic function syntax
   else Cons(as.head, apply(as.tail: _*))
 ```
 
+`_*` : repeatition of the same type element
+
+
+
+
+
 Exercise 1
 -------------
 ```scala  
