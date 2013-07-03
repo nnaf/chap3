@@ -23,16 +23,19 @@ object List { // `List` companion object
   }
 }
 ```
+`+A`: covariant type 
+
 
 Variadic function
 ------------------
+
 ```scala  
 def apply[A](as: A*): List[A] = // Variadic function syntax
   if (as.isEmpty) Nil
   else Cons(as.head, apply(as.tail: _*))
 ```
 
-`_*` : repeatition of the same type element
+`_*` : repetition of the same type element
 
 
 
@@ -40,6 +43,7 @@ def apply[A](as: A*): List[A] = // Variadic function syntax
 
 Exercise 1
 -------------
+
 ```scala  
 val example = Cons(1, Cons(2, Cons(3, Nil))) // Creating lists
 val example2 = List(1,2,3)
@@ -54,44 +58,10 @@ val x = List(1,2,3,4,5) match {
 }
 ```
 
-Exercise 1
--------------
-```scala  
-def append[A](a1: List[A], a2: List[A]): List[A] =
-  a1 match {
-    case Nil => a2
-    case Cons(h,t) => Cons(h, append(t, a2))
-}
-```
-
-Autre
--------------
-```scala  
-def foldRight[A,B](l: List[A], z: B)(f: (A, B) => B): B = // Utility functions
-  l match {
-    case Nil => z
-    case Cons(x, xs) => f(x, foldRight(xs, z)(f))
-  }
-
-def sum2(l: List[Int]) = 
-  foldRight(l, 0.0)(_ + _)
-
-def product2(l: List[Double]) = 
-  foldRight(l, 1.0)(_ * _)
-```
-
 
 Exercise 2
 -------------
-  /* 
-  3. The third case is the first that matches, with `x` bound to 1 and `y` bound to 2. 
-  */
 
-  /*
-  Although we could return `Nil` when the input list is empty, we choose to throw an exception instead. This is a somewhat subjective choice. In our experience taking the tail of an empty list is often a bug, and silently returning a value just means this bug will be discovered later, further from the place where it was introduced. 
-  
-  It's generally good practice when pattern matching to use '_' for any variables you don't intend to use on the right hand side of a pattern. It makes it clear the value isn't relevant.  
-  */
 ```scala  
 def tail[A](l: List[A]): List[A] = 
   l match {
@@ -102,9 +72,7 @@ def tail[A](l: List[A]): List[A] =
 
 Exercise 3
 -------------
-  /* 
-  Again, it is somewhat subjective whether to throw an exception when asked to drop more elements than the list contains. The usual default for `drop` is not to throw an exception, since it is typically used in cases where this is not indicative of a programming error. If you pay attention to how you use `drop`, it is often in cases where the length of the input list is unknown, and the number of elements to be dropped is being computed from something else. If `drop` threw an exception, we'd have to first compute or check the length and only drop up to that many elements.  
-  */
+
 ```scala  
 def drop[A](l: List[A], n: Int): List[A] = 
   if (n <= 0) l
@@ -116,9 +84,7 @@ def drop[A](l: List[A], n: Int): List[A] =
 
 Exercise 4
 -------------
-  /* 
-  Somewhat overkill, but to illustrate the feature we are using a _pattern guard_, to only match a `Cons` whose head satisfies our predicate, `f`. The syntax is simply to add `if <cond>` after the pattern, before the `=>`, where `<cond>` can use any of the variables introduced by the pattern.
-  */
+
 ```scala  
 def dropWhile[A](l: List[A])(f: A => Boolean): List[A] = 
   l match {
@@ -129,9 +95,7 @@ def dropWhile[A](l: List[A])(f: A => Boolean): List[A] =
 
 Exercise 5
 -------------
-  /*
-  If a function body consists solely of a match expression, we'll often put the match on the same line as the function signature, rather than introducing another level of nesting.
-  */
+
 ```scala  
 def setHead[A](l: List[A])(h: A): List[A] = l match {
   case Nil => sys.error("setHead on empty list")
@@ -141,11 +105,12 @@ def setHead[A](l: List[A])(h: A): List[A] = l match {
 
 Exercise 6
 -------------
-  /*
+
   Notice we are copying the entire list up until the last element. Besides being inefficient, the natural recursive solution will use a stack frame for each element of the list, which can lead to stack overflows for large lists (can you see why?). With lists, it's common to use a temporary, mutable buffer internal to the function (with lazy lists or streams which we discuss in chapter 5, we don't normally do this). So long as the buffer is allocated internal to the function, the mutation is not observable and RT is preserved.
   
   Another common convention is to accumulate the output list in reverse order, then reverse it at the end, which does not require even local mutation. We will write a reverse function later in this chapter.
-  */
+
+
 ```scala  
 def init[A](l: List[A]): List[A] = 
   l match { 
@@ -165,16 +130,26 @@ def init2[A](l: List[A]): List[A] = {
   go(l)
 }
 ```
-
-  /* 
-  No, this is not possible! The reason is that _before_ we ever call our function, `f`, we evaluate its argument, which in the case of `foldRight` means traversing the list all the way to the end. We need _non-strict_ evaluation to support early termination---we discuss this in chapter 5.
-  */
-
-Exercise 9
+Exercise 7-8
 -------------
-  /* 
-  We get back the original list! Why is that? As we mentioned earlier, one way of thinking about what `foldRight` "does" is it replaces the `Nil` constructor of the list with the `z` argument, and it replaces the `Cons` constructor with the given function, `f`. If we just supply `Nil` for `z` and `Cons` for `f`, then we get back the input list. 
-  
+right fold: A*(B*(C*D))
+
+```scala  
+def foldRight[A,B](l: List[A], z: B)(f: (A, B) => B): B = 
+  l match {
+    case Nil => z
+    case Cons(x, xs) => f(x, foldRight(xs, z)(f))
+  }
+
+def sum2(l: List[Int]) = 
+  foldRight(l, 0.0)(_ + _)
+
+def product2(l: List[Double]) = 
+  foldRight(l, 1.0)(_ * _)
+```
+
+
+ 
 ```scala  
 foldRight(Cons(1, Cons(2, Cons(3, Nil))), Nil:List[Int])(Cons(_,_))
 Cons(1, foldRight(Cons(2, Cons(3, Nil)), Nil:List[Int])(Cons(_,_)))
@@ -184,7 +159,7 @@ Cons(1, Cons(2, Cons(3, Nil)))
 ```
 
 
-Exercise 1
+Exercise 9
 -------------
 ```scala  
 def length[A](l: List[A]): Int = 
@@ -193,9 +168,8 @@ def length[A](l: List[A]): Int =
 
 Exercise 10
 -------------
-  /* 
-  It's common practice to annotate functions you expect to be tail-recursive with the `tailrec` annotation. If the function is not tail-recursive, it will yield a compile error, rather than silently compiling the code and resulting in greater stack space usage at runtime. 
-  */
+tail-recursive foldLeft
+
 ```scala  
 @annotation.tailrec
 def foldLeft[A,B](l: List[A], z: B)(f: (B, A) => B): B = l match { 
@@ -222,11 +196,7 @@ def reverse[A](l: List[A]): List[A] = foldLeft(l, List[A]())((acc,h) => Cons(h,a
 
 Exercise 13-14
 -------------
-  /*
-  The implementation of `foldRight` in terms of `reverse` and `foldLeft` is a common trick for avoiding stack overflows when implementing a strict `foldRight` function as we've done in this chapter. (We will revisit this in a later chapter, when we discuss laziness).
-  
-  The other implementations build up a chain of functions which, when called, results in the operations being performed with the correct associativity.
-  */
+
 ```scala  
 def foldRightViaFoldLeft[A,B](l: List[A], z: B)(f: (A,B) => B): B = 
   foldLeft(reverse(l), z)((b,a) => f(a,b))
@@ -242,9 +212,6 @@ def foldLeftViaFoldRight[A,B](l: List[A], z: B)(f: (B,A) => B): B =
 Exercise 15
 -------------
 
-  /*
-  `append` simply replaces the `Nil` constructor of the first list with the second list, which is exactly the operation performed by `foldRight`.
-  */
 
 ```scala  
 def appendViaFoldRight[A](l: List[A], r: List[A]): List[A] = 
