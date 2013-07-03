@@ -1,6 +1,9 @@
 Chapter 3
 ============
-
+Functional data structures:
+* pattern matching
+* recursion
+* data sharing, as immutable data != copy
 
 ```scala  
 sealed trait List[+A] // `List` data type
