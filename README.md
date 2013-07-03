@@ -2,7 +2,7 @@ Chapter 3
 ============
 
 
-'''scala  
+''' scala  
 sealed trait List[+A] // `List` data type
 case object Nil extends List[Nothing] // data constructor for `List`
 case class Cons[+A](head: A, tail: List[A]) extends List[A]
@@ -23,7 +23,7 @@ object List { // `List` companion object
   
 Variadic function
 ------------------
-'''scala  
+'''  
 def apply[A](as: A*): List[A] = // Variadic function syntax
   if (as.isEmpty) Nil
   else Cons(as.head, apply(as.tail: _*))
@@ -31,19 +31,19 @@ def apply[A](as: A*): List[A] = // Variadic function syntax
 
 Exercise 1
 -------------
-'''scala  
-val example = Cons(1, Cons(2, Cons(3, Nil))) // Creating lists
-val example2 = List(1,2,3)
-val total = sum(example)
+	'''  
+	val example = Cons(1, Cons(2, Cons(3, Nil))) // Creating lists
+	val example2 = List(1,2,3)
+	val total = sum(example)
 
-val x = List(1,2,3,4,5) match {
-  case Cons(x, Cons(2, Cons(4, _))) => x
-  case Nil => 42 
-  case Cons(x, Cons(y, Cons(3, Cons(4, _)))) => x + y
-  case Cons(h, t) => h + sum(t)
-  case _ => 101 
-}
-'''
+	val x = List(1,2,3,4,5) match {
+	  case Cons(x, Cons(2, Cons(4, _))) => x
+	  case Nil => 42 
+	  case Cons(x, Cons(y, Cons(3, Cons(4, _)))) => x + y
+	  case Cons(h, t) => h + sum(t)
+	  case _ => 101 
+	}
+	'''
 
 Exercise 1
 -------------
