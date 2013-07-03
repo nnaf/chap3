@@ -2,25 +2,25 @@ Chapter 3
 ============
 
 
-	''' scala  
-	sealed trait List[+A] // `List` data type
-	case object Nil extends List[Nothing] // data constructor for `List`
-	case class Cons[+A](head: A, tail: List[A]) extends List[A]
+```scala  
+sealed trait List[+A] // `List` data type
+case object Nil extends List[Nothing] // data constructor for `List`
+case class Cons[+A](head: A, tail: List[A]) extends List[A]
 
-	object List { // `List` companion object
-	  def sum(ints: List[Int]): Int = ints match { // Pattern matching example
-	    case Nil => 0
-	    case Cons(x,xs) => x + sum(xs)
-	  } 
-	  
-	  def product(ds: List[Double]): Double = ds match {
-	    case Nil => 1.0
-	    case Cons(0.0, _) => 0.0
-	    case Cons(x,xs) => x * product(xs)
-	  }
-	}
-	'''
+object List { // `List` companion object
+  def sum(ints: List[Int]): Int = ints match { // Pattern matching example
+    case Nil => 0
+    case Cons(x,xs) => x + sum(xs)
+  } 
   
+  def product(ds: List[Double]): Double = ds match {
+    case Nil => 1.0
+    case Cons(0.0, _) => 0.0
+    case Cons(x,xs) => x * product(xs)
+  }
+}
+```
+
 Variadic function
 ------------------
 	'''java  
